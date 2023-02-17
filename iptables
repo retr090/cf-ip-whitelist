@@ -1,0 +1,13 @@
+apt install ipset
+
+ipset create cf4 hash:net
+
+for x in $(curl https://www.cloudflare.com/ips-v4); do ipset add cf4 $x; done
+
+iptables -A INPUT -m set --match-set cf4 src -p tcp -m multiport --dports http,https -j ACCEPT
+
+
+Destroy IP list 
+
+ipset destroy cf4
+ipset create cf4 hash:net
